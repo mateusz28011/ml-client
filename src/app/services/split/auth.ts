@@ -15,14 +15,14 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
   user: User;
 }
 
 export interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
+  access: string;
+  refresh: string;
   accessTokenExpiration: Date;
 }
 
@@ -32,6 +32,11 @@ export interface LogoutRespone {
 
 export const authApi = emptySplitApi.injectEndpoints({
   endpoints: (build) => ({
+    getLoggedUser: build.query<User, void>({
+      query: () => ({
+        url: 'dj-rest-auth/user/',
+      }),
+    }),
     login: build.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
         url: 'dj-rest-auth/login/',
@@ -39,15 +44,15 @@ export const authApi = emptySplitApi.injectEndpoints({
         body: credentials,
       }),
     }),
-    refreshToken: build.mutation<void, RefreshTokenResponse>({
+    refreshToken: build.mutation<RefreshTokenResponse, void>({
       query: () => ({
-        url: 'dj-rest-auth/token/refresh',
+        url: 'dj-rest-auth/token/refresh/',
         method: 'POST',
       }),
     }),
-    logout: build.mutation<void, LogoutRespone>({
+    logout: build.mutation<LogoutRespone, void>({
       query: () => ({
-        url: 'dj-rest-auth/logout',
+        url: 'dj-rest-auth/logout/',
         method: 'POST',
       }),
     }),
@@ -55,4 +60,9 @@ export const authApi = emptySplitApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useLoginMutation } = authApi;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useLazyGetLoggedUserQuery,
+  useRefreshTokenMutation,
+} = authApi;
