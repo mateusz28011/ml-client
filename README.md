@@ -1,44 +1,45 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# Application for comparing selected clustering algorithms - client
 
-## Available Scripts
+![](https://img.shields.io/static/v1?label=&message=Project%20is%20in%20the%20making&color=red)
 
-In the project directory, you can run:
+## Table of contents
 
-### `npm start`
+- [Live demo](#live-demo)
+- [General info](#general-info)
+- [Technologies](#technologies)
+- [Functionalities](#functionalities)
+- [Setup](#setup)
+- [Sources](#sources)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Live demo
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+EMPTY
 
-### `npm test`
+## General Info
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This is client for my application which is comparing selected clustering algorithms.
+For more informations about project visit repo of api [here](https://github.com/mateusz28011/ml-api).
 
-### `npm run build`
+## Technologies
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Project is created with:
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- [React](https://reactjs.org/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [RTK Query](https://redux-toolkit.js.org/rtk-query/overview)
+- [React Hook Form](https://react-hook-form.com/)
+- [Chakra UI](https://chakra-ui.com/)
+- [Typescript](https://www.typescriptlang.org/)
+- [Framer Motion](https://www.framer.com/motion/)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Functionalities
 
-### `npm run eject`
+TODO
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Setup
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+TODO
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Sources
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+TODO
