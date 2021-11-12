@@ -8,6 +8,8 @@ import {
 } from '@reduxjs/toolkit/query';
 // import { clearUser } from '../../../features/auth/authSlice';
 
+export type ApiError = { data: any; status: number };
+
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_API_URL,
   credentials: 'include',
@@ -15,7 +17,7 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
-  FetchBaseQueryError
+  FetchBaseQueryError | ApiError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {

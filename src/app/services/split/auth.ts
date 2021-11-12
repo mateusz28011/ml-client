@@ -30,6 +30,18 @@ export interface LogoutRespone {
   detail: string;
 }
 
+export interface RegisterRequest {
+  email: string;
+  password1: string;
+  password2: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface RegisterRespone {
+  detail: string;
+}
+
 export const authApi = emptySplitApi.injectEndpoints({
   endpoints: (build) => ({
     getLoggedUser: build.query<User, void>({
@@ -38,8 +50,15 @@ export const authApi = emptySplitApi.injectEndpoints({
       }),
     }),
     login: build.mutation<LoginResponse, LoginRequest>({
-      query: (credentials) => ({
+      query: (data) => ({
         url: 'dj-rest-auth/login/',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    register: build.mutation<RegisterRespone, RegisterRequest>({
+      query: (credentials) => ({
+        url: 'dj-rest-auth/registration/',
         method: 'POST',
         body: credentials,
       }),
@@ -65,4 +84,5 @@ export const {
   useLogoutMutation,
   useLazyGetLoggedUserQuery,
   useRefreshTokenMutation,
+  useRegisterMutation,
 } = authApi;

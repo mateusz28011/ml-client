@@ -1,4 +1,4 @@
-export default function doesHttpOnlyCookieExist(cookiename: string) {
+export default function doesHttpOnlyCookieExist(cookiename: string): boolean {
   let d = new Date();
   d.setTime(d.getTime() + 1000);
   let expires = 'expires=' + d.toUTCString();

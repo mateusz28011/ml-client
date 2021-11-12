@@ -1,14 +1,13 @@
 import { Button } from '@chakra-ui/button';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { FormLabel } from '@chakra-ui/form-control';
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import { Box, VStack } from '@chakra-ui/layout';
 import { useState } from 'react';
 
 import { useForm } from 'react-hook-form';
-// import { useAppSelector } from '../../app/hooks';
+
 import { useLoginMutation } from '../../app/services/split/auth';
 import ApiError from '../../components/ui/ApiError';
-// import { selectCurrentUser } from './authSlice';
 
 interface Inputs {
   email: string;
@@ -19,15 +18,15 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const { handleSubmit, register } = useForm<Inputs>();
-  // const user = useAppSelector(selectCurrentUser);
   const [login, { isLoading, error }] = useLoginMutation();
 
   const onSubmit = (data: Inputs) => {
     login(data);
   };
-
+  console.log(error);
   return (
     <Box maxW='sm' paddingX='1rem' marginX='auto'>
+      <ApiError error={error} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={3}>
           <Box w='full'>
@@ -51,11 +50,9 @@ const Login = () => {
             </InputGroup>
           </Box>
         </VStack>
-        <FormControl isInvalid={error !== undefined}>
-          <ApiError error={error} isFormError />
-        </FormControl>
+
         <Button width='full' marginTop='4' isLoading={isLoading} type='submit'>
-          Submit
+          Sign In
         </Button>
       </form>
     </Box>

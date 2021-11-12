@@ -1,5 +1,5 @@
+import { Alert, AlertIcon } from '@chakra-ui/alert';
 import { FormErrorMessage } from '@chakra-ui/form-control';
-import { Box } from '@chakra-ui/layout';
 import { v4 } from 'uuid';
 
 export const Error = ({
@@ -15,9 +15,10 @@ export const Error = ({
     isFormError ? (
       <FormErrorMessage>{error}</FormErrorMessage>
     ) : (
-      <Box fontSize='sm' color='red.500'>
+      <Alert status='error' variant='left-accent' my={2}>
+        <AlertIcon />
         {error}
-      </Box>
+      </Alert>
     )
   ) : null;
 };
@@ -25,14 +26,22 @@ export const Error = ({
 const ApiError = ({
   error,
   name,
+  isServerError = false,
   isFormError = false,
 }: {
   error: any;
   name?: string;
+  isServerError?: boolean;
   isFormError?: boolean;
 }) => {
-  error = error?.data;
-  error = error && name ? error[0][name] : error;
+  if (!isServerError) {
+    error = error?.data;
+    error = error && name ? error[name] : error;
+  } else if (typeof error?.status === 'string') {
+    error = 'Server error';
+  } else {
+    error = null;
+  }
   return error ? (
     <>
       {Array.isArray(error) ? (
