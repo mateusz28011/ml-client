@@ -1,39 +1,40 @@
 import { Button } from '@chakra-ui/button';
-import { FormLabel } from '@chakra-ui/form-control';
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import { Box, VStack } from '@chakra-ui/layout';
 import { useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useLoginMutation } from '../../app/services/split/auth';
+import { LoginRequest, useLoginMutation } from '../../app/services/split/auth';
+import useApiError from '../../app/useApiError';
 import ApiError from '../../components/ui/ApiError';
-
-interface Inputs {
-  email: string;
-  password: string;
-}
 
 const Login = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
-  const { handleSubmit, register } = useForm<Inputs>();
+  const { handleSubmit, register } = useForm<LoginRequest>();
   const [login, { isLoading, error }] = useLoginMutation();
+  const apiErrors = useApiError<LoginRequest, keyof LoginRequest>(error, [
+    'email',
+    'password',
+  ]);
 
-  const onSubmit = (data: Inputs) => {
+  const onSubmit = (data: LoginRequest) => {
     login(data);
   };
-  console.log(error);
+
   return (
     <Box maxW='sm' paddingX='1rem' marginX='auto'>
-      <ApiError error={error} />
+      <ApiError error={apiErrors.mainError} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={3}>
-          <Box w='full'>
+          <FormControl isInvalid={apiErrors.email?.isError} w='full'>
             <FormLabel htmlFor='email'>Email</FormLabel>
             <Input type='email' required {...register('email')} />
-          </Box>
-          <Box w='full'>
+            <ApiError error={apiErrors.email?.error} isFormError />
+          </FormControl>
+          <FormControl isInvalid={apiErrors.password?.isError} w='full'>
             <FormLabel htmlFor='password'>Password</FormLabel>
             <InputGroup size='md'>
               <Input
@@ -48,7 +49,8 @@ const Login = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
-          </Box>
+            <ApiError error={apiErrors.password?.error} isFormError />
+          </FormControl>
         </VStack>
 
         <Button width='full' marginTop='4' isLoading={isLoading} type='submit'>

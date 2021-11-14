@@ -25,23 +25,11 @@ export const Error = ({
 
 const ApiError = ({
   error,
-  name,
-  isServerError = false,
   isFormError = false,
 }: {
   error: any;
-  name?: string;
-  isServerError?: boolean;
   isFormError?: boolean;
 }) => {
-  if (!isServerError) {
-    error = error?.data;
-    error = error && name ? error[name] : error;
-  } else if (typeof error?.status === 'string') {
-    error = 'Server error';
-  } else {
-    error = null;
-  }
   return error ? (
     <>
       {Array.isArray(error) ? (

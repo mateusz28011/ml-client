@@ -2,9 +2,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { useEffect, useState } from 'react';
 import { ApiError } from './services/split';
-// import { RegisterRequest } from './services/split/auth';
-// import { keys } from 'ts-transformer-keys';
-// Partial<RequestData>
+
 type ApiErrorReturn<T> = {
   [Key in keyof T | 'mainError']?: { error: any; isError: boolean };
 };

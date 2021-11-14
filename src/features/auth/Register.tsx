@@ -1,4 +1,3 @@
-import { Alert, AlertIcon } from '@chakra-ui/alert';
 import { Button } from '@chakra-ui/button';
 import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
@@ -11,7 +10,7 @@ import {
   useRegisterMutation,
   RegisterRequest,
 } from '../../app/services/split/auth';
-import hasSpecificNameInApiError from '../../common/hasSpecificNameInApiError';
+import useApiError from '../../app/useApiError';
 import ApiError from '../../components/ui/ApiError';
 
 const Register = () => {
@@ -19,43 +18,39 @@ const Register = () => {
   const handleClick = () => setShow(!show);
   const { handleSubmit, register: registerInput } = useForm<RegisterRequest>();
   const [register, { isLoading, error }] = useRegisterMutation();
+  const apiErrors = useApiError<RegisterRequest, keyof RegisterRequest>(error, [
+    'firstName',
+    'lastName',
+    'email',
+    'password1',
+    'password2',
+  ]);
+
   const onSubmit = (data: RegisterRequest) => {
     register(data);
   };
 
   return (
     <Box maxW='sm' paddingX='1rem' marginX='auto'>
-      <ApiError error={error} isServerError />
+      <ApiError error={apiErrors.mainError} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={3}>
-          <FormControl
-            isInvalid={hasSpecificNameInApiError(error, 'firstName')}
-            w='full'
-          >
+          <FormControl isInvalid={apiErrors.firstName?.isError} w='full'>
             <FormLabel htmlFor='firstName'>First name</FormLabel>
             <Input type='firstName' required {...registerInput('firstName')} />
-            <ApiError error={error} name='firstName' isFormError />
+            <ApiError error={apiErrors.firstName?.error} isFormError />
           </FormControl>
-          <FormControl
-            isInvalid={hasSpecificNameInApiError(error, 'lastName')}
-            w='full'
-          >
+          <FormControl isInvalid={apiErrors.lastName?.isError} w='full'>
             <FormLabel htmlFor='lastName'>Last name</FormLabel>
             <Input type='lastName' required {...registerInput('lastName')} />
-            <ApiError error={error} name='lastName' isFormError />
+            <ApiError error={apiErrors.lastName?.error} isFormError />
           </FormControl>
-          <FormControl
-            isInvalid={hasSpecificNameInApiError(error, 'email')}
-            w='full'
-          >
+          <FormControl isInvalid={apiErrors.email?.isError} w='full'>
             <FormLabel htmlFor='email'>Email</FormLabel>
             <Input type='email' required {...registerInput('email')} />
-            <ApiError error={error} name='email' isFormError />
+            <ApiError error={apiErrors.email?.error} isFormError />
           </FormControl>
-          <FormControl
-            isInvalid={hasSpecificNameInApiError(error, 'password1')}
-            w='full'
-          >
+          <FormControl isInvalid={apiErrors.password1?.isError} w='full'>
             <FormLabel htmlFor='password1'>Password</FormLabel>
             <InputGroup size='md'>
               <Input
@@ -70,12 +65,9 @@ const Register = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
-            <ApiError error={error} name='password1' isFormError />
+            <ApiError error={apiErrors.password1?.error} isFormError />
           </FormControl>
-          <FormControl
-            isInvalid={hasSpecificNameInApiError(error, 'nonFieldErrors')}
-            w='full'
-          >
+          <FormControl isInvalid={apiErrors.password2?.isError} w='full'>
             <FormLabel htmlFor='password2'>Confirm password</FormLabel>
             <Input
               pr='4.5rem'
@@ -83,7 +75,7 @@ const Register = () => {
               required
               {...registerInput('password2')}
             />
-            <ApiError error={error} name='nonFieldErrors' isFormError />
+            <ApiError error={apiErrors.password2?.error} isFormError />
           </FormControl>
         </VStack>
 
