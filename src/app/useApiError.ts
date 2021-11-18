@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 import { ApiError } from './services/split';
 
 type ApiErrorReturn<T> = {
-  [Key in keyof T | 'mainError']?: { error: any; isError: boolean };
+  [Key in keyof T | 'mainError' | 'nonFieldErrors']?: {
+    error: any;
+    isError: boolean;
+  };
 };
 
 const hasNameError = (
@@ -37,6 +40,10 @@ const checkErrors = <T, Key extends keyof T>(
   error: FetchBaseQueryError | ApiError | SerializedError | undefined,
   keys: Array<Key>
 ): ApiErrorReturn<T> => {
+  const [nonFieldErrors, isNonFieldErrors] = hasNameError(
+    error,
+    'nonFieldErrors'
+  );
   return keys.reduce(
     (a, v) => {
       const [errorData, isNameError] = hasNameError(error, v as string);
@@ -48,7 +55,10 @@ const checkErrors = <T, Key extends keyof T>(
         },
       };
     },
-    { mainError: checkMainError(error) }
+    {
+      mainError: checkMainError(error),
+      nonFieldErrors: { error: nonFieldErrors, isError: isNonFieldErrors },
+    }
   );
 };
 

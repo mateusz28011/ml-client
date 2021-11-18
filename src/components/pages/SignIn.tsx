@@ -10,7 +10,6 @@ const SignIn = () => {
       mx='auto'
       rounded='lg'
       shadow='md'
-      textAlign='center'
       mt={24}
       px={[2, 6, 10]}
       py={10}
@@ -18,10 +17,10 @@ const SignIn = () => {
       borderStyle={'solid'}
       borderColor={useColorModeValue('gray.200', 'gray.900')}
     >
-      <Text fontSize='4xl' fontWeight='bold'>
+      <Text fontSize='4xl' fontWeight='bold' textAlign='center'>
         Sign in to your account
       </Text>
-      <Text fontSize='large' mt={5} mb={12}>
+      <Text fontSize='large' mt={5} mb={12} textAlign='center'>
         Don't have an account yet?
         <Link
           as={RouterLink}

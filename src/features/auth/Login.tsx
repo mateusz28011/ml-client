@@ -27,6 +27,7 @@ const Login = () => {
   return (
     <Box maxW='sm' paddingX='1rem' marginX='auto'>
       <ApiError error={apiErrors.mainError} />
+      <ApiError error={apiErrors.nonFieldErrors} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={3}>
           <FormControl isInvalid={apiErrors.email?.isError} w='full'>
