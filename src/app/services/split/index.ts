@@ -10,6 +10,14 @@ import {
 
 export type ApiError = { data: any; status: number };
 
+export interface Pagination {
+  count: number;
+  next: number;
+  previous: number;
+  totalPages: number;
+  currentPage: number;
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_API_URL,
   credentials: 'include',
@@ -37,5 +45,6 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const emptySplitApi = createApi({
   baseQuery: baseQueryWithReauth,
+  tagTypes: ['Dataset'],
   endpoints: () => ({}),
 });

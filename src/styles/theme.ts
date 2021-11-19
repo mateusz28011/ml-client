@@ -1,6 +1,11 @@
-import { extendTheme } from '@chakra-ui/react';
+import {
+  extendTheme,
+  theme as baseTheme,
+  withDefaultColorScheme,
+} from '@chakra-ui/react';
 // import { FormErrorMessageStyle as FormErrorMessage } from './components/FormErrorMessageStyle';
 
-export const myNewTheme = extendTheme({
-  components: {},
-});
+export const customTheme = extendTheme(
+  withDefaultColorScheme({ colorScheme: 'orange' }),
+  baseTheme
+);

@@ -71,7 +71,7 @@ export default function Navbar() {
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <DesktopNav />
+            <DesktopNav isAuthenticated={isAuthenticated} />
           </Flex>
         </Flex>
 
@@ -121,58 +121,61 @@ export default function Navbar() {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav isAuthenticated={isAuthenticated} />
       </Collapse>
     </Box>
   );
 }
 
-const DesktopNav = () => {
+const DesktopNav = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
     <Stack direction={'row'} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={'hover'} placement={'bottom-start'}>
-            <PopoverTrigger>
-              <Link
-                as={RouterLink}
-                p={2}
-                to={navItem.to ?? '#'}
-                fontSize={'sm'}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: 'none',
-                  color: linkHoverColor,
-                }}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
+      {NAV_ITEMS.map((navItem) => {
+        return (navItem.isPrivate === true && isAuthenticated) ||
+          navItem.isPrivate === undefined ? (
+          <Box key={navItem.label}>
+            <Popover trigger={'hover'} placement={'bottom-start'}>
+              <PopoverTrigger>
+                <Link
+                  as={RouterLink}
+                  p={2}
+                  to={navItem.to ?? '#'}
+                  fontSize={'sm'}
+                  fontWeight={500}
+                  color={linkColor}
+                  _hover={{
+                    textDecoration: 'none',
+                    color: linkHoverColor,
+                  }}
+                >
+                  {navItem.label}
+                </Link>
+              </PopoverTrigger>
 
-            {navItem.children && (
-              <PopoverContent
-                border={0}
-                boxShadow={'xl'}
-                bg={popoverContentBgColor}
-                p={4}
-                rounded={'xl'}
-                minW={'sm'}
-              >
-                <Stack>
-                  {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            )}
-          </Popover>
-        </Box>
-      ))}
+              {navItem.children && (
+                <PopoverContent
+                  border={0}
+                  boxShadow={'xl'}
+                  bg={popoverContentBgColor}
+                  p={4}
+                  rounded={'xl'}
+                  minW={'sm'}
+                >
+                  <Stack>
+                    {navItem.children.map((child) => (
+                      <DesktopSubNav key={child.label} {...child} />
+                    ))}
+                  </Stack>
+                </PopoverContent>
+              )}
+            </Popover>
+          </Box>
+        ) : null;
+      })}
     </Stack>
   );
 };
@@ -215,16 +218,19 @@ const DesktopSubNav = ({ label, to, subLabel }: NavItem) => {
   );
 };
 
-const MobileNav = () => {
+const MobileNav = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <Stack
       bg={useColorModeValue('white', 'gray.800')}
       p={4}
       display={{ md: 'none' }}
     >
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
-      ))}
+      {NAV_ITEMS.map((navItem) => {
+        return (navItem.isPrivate === true && isAuthenticated) ||
+          navItem.isPrivate === undefined ? (
+          <MobileNavItem key={navItem.label} {...navItem} />
+        ) : null;
+      })}
     </Stack>
   );
 };
@@ -292,26 +298,28 @@ interface NavItem {
   subLabel?: string;
   children?: Array<NavItem>;
   to?: string;
+  isPrivate?: boolean;
 }
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: 'First',
+    label: 'My work',
     children: [
       {
-        label: 'First',
-        subLabel: 'Desc',
-        to: 'login',
+        label: 'Datasets',
+        subLabel: 'Manage your data sets',
+        to: 'datasets',
       },
       {
         label: 'Second',
         subLabel: 'Desc',
-        to: '#',
+        to: 'register',
       },
     ],
+    isPrivate: true,
   },
   {
     label: 'Second',
-    to: '#',
+    to: 'login',
   },
 ];

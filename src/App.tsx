@@ -4,10 +4,11 @@ import { useEffect } from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { useLazyGetLoggedUserQuery } from './app/services/split/auth';
 import doesHttpOnlyCookieExist from './common/doesHttpOnlyCookieExist';
-
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import Navbar from './components/sections/Navbar';
+import Datasets from './features/datasets/Datasets';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function App() {
       <Container
         flex='1 1 auto'
         maxW='8xl'
+        py='5'
         borderX={1}
         borderStyle={'solid'}
         borderColor={useColorModeValue('gray.200', 'gray.900')}
@@ -40,9 +42,9 @@ function App() {
           <Route exact path='/signup'>
             <SignUp />
           </Route>
-          {/* <PrivateRoute exact path='/orders/' component={Orders} />
-          <Route exact path='/album/' component={Album} />
-          <Route>
+          <PrivateRoute exact path='/datasets' component={Datasets} />
+          {/* <Route exact path='/album/' component={Album} /> */}
+          {/* <Route>
             <Home />
           </Route> */}
         </Switch>
