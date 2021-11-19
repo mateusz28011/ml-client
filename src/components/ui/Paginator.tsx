@@ -28,9 +28,9 @@ const Paginator = ({
             cursor={next ? 'pointer' : 'default'}
             onClick={() => next && setPage(next)}
           />
+          <Box position='absolute' right='5'>{`${count} ITEMS`}</Box>
         </>
       )}
-      <Box position='absolute' right='5'>{`${count} ITEMS`}</Box>
     </Center>
   );
 };

@@ -308,18 +308,18 @@ const NAV_ITEMS: Array<NavItem> = [
       {
         label: 'Datasets',
         subLabel: 'Manage your data sets',
-        to: 'datasets',
+        to: '/datasets',
       },
       {
         label: 'Second',
         subLabel: 'Desc',
-        to: 'register',
+        to: '/register',
       },
     ],
     isPrivate: true,
   },
   {
     label: 'Second',
-    to: 'login',
+    to: '/login',
   },
 ];

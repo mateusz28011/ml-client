@@ -1,31 +1,42 @@
-import { Button } from '@chakra-ui/button';
-import { Box, Flex, Link } from '@chakra-ui/layout';
-import { Progress } from '@chakra-ui/react';
-import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from '@chakra-ui/table';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { Box, Center, Link } from '@chakra-ui/layout';
+import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/table';
+import {
+  Table as RTable,
+  Thead as RThead,
+  Tbody as RTbody,
+  Tr as RTr,
+  Th as RTh,
+  Td as RTd,
+} from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+
+import { useState } from 'react';
 
 import {
   datasetsApi,
   useGetDatasetsQuery,
 } from '../../app/services/split/datasets';
 import Paginator from '../../components/ui/Paginator';
-import axiosConfig from '../../common/axiosConfig';
-import axios from 'axios';
+
 import { DownloadIcon } from '@chakra-ui/icons';
 import { useAppDispatch } from '../../app/hooks';
 import { BeatLoader } from 'react-spinners';
+import FileUpload from './FileUpload';
+import { useHistory } from 'react-router';
+import { Button } from '@chakra-ui/button';
+import { Alert, AlertIcon } from '@chakra-ui/alert';
 
 const Datasets = () => {
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const [page, setPage] = useState<number>();
-  const { data, isError, isLoading, isFetching, isUninitialized } =
-    useGetDatasetsQuery(page);
+  const { data, isError, isLoading, isFetching } = useGetDatasetsQuery(page);
 
   const refetchDatasets = () => {
     dispatch(datasetsApi.util.invalidateTags(['Dataset']));
     setPage(undefined);
   };
-  console.log(isUninitialized);
+
   return (
     <Box
       my={5}
@@ -34,48 +45,77 @@ const Datasets = () => {
       borderColor='gray.200'
       rounded='2xl'
       shadow='sm'
-      w={{ md: '60%' }}
+      w={{ md: '80%' }}
       mx='auto'
+      pos='relative'
     >
-      <Table size='md'>
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Uploaded</Th>
-            <Th>
-              <Box
-                textAlign='center'
-                visibility={isFetching ? 'visible' : 'hidden'}
-              >
-                <BeatLoader size={5} />
-              </Box>
-            </Th>
+      <Box
+        pos='absolute'
+        top='0'
+        right='4'
+        textAlign='center'
+        visibility={isFetching ? 'visible' : 'hidden'}
+      >
+        <BeatLoader size={5} />
+      </Box>
+      <Table as={RTable} size='md' mt={['6', '6', '0']}>
+        <Thead as={RThead}>
+          <Tr as={RTr}>
+            <Th as={RTh}>Name</Th>
+            <Th as={RTh}>Uploaded</Th>
+            <Th as={RTh}></Th>
           </Tr>
         </Thead>
-        <Tbody>
-          {data &&
-            data.results.map((dataset) => (
-              <Tr key={dataset.id}>
-                <Td>{dataset.name || '-'}</Td>
-                <Td>{new Date(dataset.created).toLocaleString()}</Td>
-                <Td textAlign='center'>
-                  <Link href={dataset.file}>
-                    <DownloadIcon boxSize={5} color='orange.500' />
-                  </Link>
+        <Tbody as={RTbody}>
+          {data && data.results.length !== 0 ? (
+            data.results.map((dataset, index) => (
+              <Tr
+                as={RTr}
+                border='0 !important'
+                onClick={() => history.push(`datasets/${dataset.id}`)}
+                key={dataset.id}
+                bg={index % 2 ? undefined : 'orange.100'}
+                _hover={{
+                  bg: 'orange.200',
+                  cursor: 'pointer',
+                }}
+              >
+                <Td as={RTd}>{dataset.name || '-'}</Td>
+                <Td as={RTd}>{new Date(dataset.created).toLocaleString()}</Td>
+                <Td as={RTd}>
+                  <Center>
+                    <Link
+                      href={dataset.file}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button variant='ghost' size='sm'>
+                        <DownloadIcon boxSize={5} color='gray.600' />
+                      </Button>
+                    </Link>
+                  </Center>
                 </Td>
               </Tr>
-            ))}
+            ))
+          ) : isLoading ? null : (
+            <Tr>
+              <Td colSpan={3} textAlign='center'>
+                {isError ? (
+                  <Alert status='error' variant='left-accent'>
+                    <AlertIcon />
+                    Server error
+                  </Alert>
+                ) : (
+                  'No data uploaded'
+                )}
+              </Td>
+            </Tr>
+          )}
         </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th colSpan={3}>
-              {!isError && !isLoading && (
-                <FileUpload refetchDatasets={refetchDatasets} />
-              )}
-            </Th>
-          </Tr>
-        </Tfoot>
       </Table>
+
+      {!isError && !isLoading && (
+        <FileUpload refetchDatasets={refetchDatasets} />
+      )}
       {data && (
         <Paginator
           setPage={setPage}
@@ -87,89 +127,6 @@ const Datasets = () => {
         />
       )}
     </Box>
-  );
-};
-
-interface UploadState {
-  progress: number | undefined;
-  isStarted: boolean;
-  isUploading: boolean;
-}
-
-const defaultUploadState: UploadState = {
-  progress: undefined,
-  isStarted: false,
-  isUploading: false,
-};
-
-const FileUpload = ({ refetchDatasets }: { refetchDatasets: () => void }) => {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const [uploadState, setUploadState] =
-    useState<UploadState>(defaultUploadState);
-  const [cancelTokenSource] = useState(axios.CancelToken.source());
-  console.log(uploadState);
-
-  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    setUploadState((prev) => ({ ...prev, isStarted: true }));
-    const target = e.currentTarget as HTMLInputElement;
-    const file = target.files![0];
-
-    const config = {
-      cancelToken: cancelTokenSource.token,
-      onUploadProgress: function (progressEvent: ProgressEvent) {
-        var percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-        setUploadState((prev) => ({ ...prev, progress: percentCompleted }));
-      },
-    };
-
-    let formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      setUploadState((prev) => ({ ...prev, isUploading: true }));
-      await axiosConfig.post('/datasets/', formData, config);
-      refetchDatasets();
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        return;
-      }
-    }
-    setUploadState(defaultUploadState);
-    target.value = '';
-  };
-
-  useEffect(() => {
-    return () => {
-      console.log('clear');
-      cancelTokenSource.cancel();
-    };
-  }, [cancelTokenSource]);
-
-  return (
-    <Flex align='center' justify='space-between'>
-      <input
-        type='file'
-        style={{ display: 'none' }}
-        ref={fileRef}
-        onChange={onChange}
-        multiple={false}
-        required
-      />
-      <Button
-        isDisabled={uploadState.isStarted}
-        isLoading={uploadState.isUploading}
-        variant='solid'
-        loadingText='Uploading'
-        onClick={() => fileRef.current?.click()}
-      >
-        UPLOAD DATASET
-      </Button>
-      {uploadState.progress ? (
-        <Progress hasStripe value={uploadState.progress} ml={10} flex='1' />
-      ) : null}
-    </Flex>
   );
 };
 

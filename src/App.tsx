@@ -7,6 +7,7 @@ import doesHttpOnlyCookieExist from './common/doesHttpOnlyCookieExist';
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import Navbar from './components/sections/Navbar';
+import Dataset from './features/datasets/Dataset';
 import Datasets from './features/datasets/Datasets';
 import PrivateRoute from './PrivateRoute';
 
@@ -43,7 +44,7 @@ function App() {
             <SignUp />
           </Route>
           <PrivateRoute exact path='/datasets' component={Datasets} />
-          {/* <Route exact path='/album/' component={Album} /> */}
+          <Route exact path='/datasets/:id' component={Dataset} />
           {/* <Route>
             <Home />
           </Route> */}
