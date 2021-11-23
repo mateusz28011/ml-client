@@ -6,7 +6,6 @@ import { Button } from '@chakra-ui/button';
 import { Progress } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/layout';
 import { useToast } from '@chakra-ui/toast';
-import { ApiError } from '../../app/services/split';
 
 interface UploadState {
   progress: number | undefined;

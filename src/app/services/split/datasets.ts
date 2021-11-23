@@ -17,8 +17,15 @@ export const datasetsApi = emptySplitApi.injectEndpoints({
         url: 'datasets/',
         params: { page },
       }),
+      providesTags: ['Datasets'],
+    }),
+    getDataset: build.query<Required<Dataset>, number>({
+      query: (id) => ({
+        url: `datasets/${id}/`,
+      }),
       providesTags: ['Dataset'],
     }),
+
     // uploadDataset: build.mutation<
     //   Dataset,
     //   Omit<Dataset, 'id' | 'file'> & { file: File }
@@ -35,4 +42,4 @@ export const datasetsApi = emptySplitApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetDatasetsQuery } = datasetsApi;
+export const { useGetDatasetsQuery, useGetDatasetQuery } = datasetsApi;

@@ -1,4 +1,6 @@
-import { Box, Center, Link, Text } from '@chakra-ui/layout';
+import { Box, Center, Text } from '@chakra-ui/layout';
+import React, { useState } from 'react';
+import { useGetAlgorithmsDataQuery } from '../../app/services/split/clusterings';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/table';
 import {
   Table as RTable,
@@ -9,37 +11,24 @@ import {
   Td as RTd,
 } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-
-import { useState } from 'react';
-
-import {
-  datasetsApi,
-  useGetDatasetsQuery,
-} from '../../app/services/split/datasets';
-import Paginator from '../../components/ui/Paginator';
-
-import { DownloadIcon } from '@chakra-ui/icons';
-import { useAppDispatch } from '../../app/hooks';
 import { BeatLoader } from 'react-spinners';
-import FileUpload from './FileUpload';
-import { useHistory } from 'react-router';
-import { Button } from '@chakra-ui/button';
+import Paginator from '../../components/ui/Paginator';
 import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/alert';
-import PageLoader from '../../components/ui/PageLoader';
+import AddAlgorithm from './AddAlgorithm';
 
-const Datasets = () => {
-  const history = useHistory();
-  const dispatch = useAppDispatch();
+const Clustering = ({ clusteringId }: { clusteringId: number }) => {
   const [page, setPage] = useState<number>();
-  const { data, isError, isLoading, isFetching } = useGetDatasetsQuery(page);
+  const { data, isError, isLoading, isFetching } = useGetAlgorithmsDataQuery({
+    id: clusteringId,
+    page: page,
+  });
 
-  const refetchDatasets = () => {
-    dispatch(datasetsApi.util.invalidateTags(['Datasets']));
-    setPage(undefined);
-  };
+  console.log(data);
 
   return isLoading ? (
-    <PageLoader />
+    <Box textAlign='center' mt='20' mb='10'>
+      <BeatLoader size='14px' color='#ED8936' />
+    </Box>
   ) : (
     <Box
       my={5}
@@ -69,7 +58,7 @@ const Datasets = () => {
         color='gray.700'
         borderBottomWidth={1}
       >
-        DATASETS
+        ALGORITHMS
       </Text>
       {data ? (
         data.results.length !== 0 ? (
@@ -82,31 +71,33 @@ const Datasets = () => {
               </Tr>
             </Thead>
             <Tbody as={RTbody}>
-              {data.results.map((dataset, index) => (
+              {data.results.map((algorithmData, index) => (
                 <Tr
                   as={RTr}
                   border='0 !important'
-                  onClick={() => history.push(`datasets/${dataset.id}`)}
-                  key={dataset.id}
+                  //    onClick={() => history.push(`datasets/${dataset.id}`)}
+                  key={algorithmData.id}
                   bg={index % 2 ? undefined : 'orange.100'}
                   _hover={{
                     bg: 'orange.200',
                     cursor: 'pointer',
                   }}
                 >
-                  <Td as={RTd}>{dataset.name || '-'}</Td>
-                  <Td as={RTd}>{new Date(dataset.created).toLocaleString()}</Td>
+                  <Td as={RTd}>{algorithmData.algorithmDisplay || '-'}</Td>
                   <Td as={RTd}>
-                    <Center h={4}>
-                      <Link
-                        href={dataset.file}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Button variant='ghost' size='sm'>
-                          <DownloadIcon boxSize={5} color='gray.600' />
-                        </Button>
-                      </Link>
-                    </Center>
+                    {/* {new Date(dataset.created).toLocaleString()} */}
+                  </Td>
+                  <Td as={RTd}>
+                    {/* <Center h={4}>
+                       <Link
+                         href={dataset.file}
+                         onClick={(e) => e.stopPropagation()}
+                       >
+                         <Button variant='ghost' size='sm'>
+                           <DownloadIcon boxSize={5} color='gray.600' />
+                         </Button>
+                       </Link>
+                     </Center> */}
                   </Td>
                 </Tr>
               ))}
@@ -122,15 +113,13 @@ const Datasets = () => {
           <Alert mb={5} status='error' variant='left-accent'>
             <AlertIcon />
             <AlertTitle>Server Error</AlertTitle>
-            There was a problem during loading your datasets. Try refreshing
+            There was a problem during loading your algorithms. Try refreshing
             page.
           </Alert>
         </Box>
       ) : null}
 
-      {!isError && !isLoading && (
-        <FileUpload refetchDatasets={refetchDatasets} />
-      )}
+      {!isError && !isLoading && <AddAlgorithm clusteringId={clusteringId} />}
       {data && (
         <Paginator
           setPage={setPage}
@@ -145,4 +134,4 @@ const Datasets = () => {
   );
 };
 
-export default Datasets;
+export default Clustering;

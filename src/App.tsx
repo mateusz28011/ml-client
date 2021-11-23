@@ -45,6 +45,11 @@ function App() {
           </Route>
           <PrivateRoute exact path='/datasets' component={Datasets} />
           <Route exact path='/datasets/:id' component={Dataset} />
+          <Route
+            exact
+            path='/datasets/:id/clustering/:clusteringId'
+            component={Dataset}
+          />
           {/* <Route>
             <Home />
           </Route> */}
