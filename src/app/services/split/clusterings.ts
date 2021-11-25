@@ -11,13 +11,17 @@ export interface PostClustering {
   dataset: number;
 }
 
-export interface AlgorithmData {
+export interface AlgorithmDataList {
   id: number;
   taskStatus: string;
-  // resultData:string;
-  // algorithm:number;
   algorithmDisplay: string;
   clustersCount: number;
+}
+
+export interface AlgorithmData extends AlgorithmDataList {
+  resultData: string;
+  algorithm: number;
+  scores: any;
 }
 
 export interface PostAlgorithmData {
@@ -46,7 +50,7 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
       invalidatesTags: ['Clusterings'],
     }),
     getAlgorithmsData: build.query<
-      Pagination & { results: Array<AlgorithmData> },
+      Pagination & { results: Array<AlgorithmDataList> },
       { id: number; page?: number }
     >({
       query: ({ id, page }) => ({
@@ -54,6 +58,23 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
         params: { page },
       }),
       providesTags: ['AlgorithmsData'],
+    }),
+    getAlgorithmData: build.query<
+      AlgorithmData,
+      { clusteringId: number; id: number }
+    >({
+      query: ({ clusteringId, id }) => ({
+        url: `clusterings/${clusteringId}/algorithms/${id}/`,
+      }),
+      providesTags: ['AlgorithmData'],
+    }),
+    startAlgorithm: build.mutation<void, { clusteringId: number; id: number }>({
+      query: ({ clusteringId, id }) => ({
+        url: `clusterings/${clusteringId}/algorithms/${id}/start/`,
+        method: 'POST',
+        body: undefined,
+      }),
+      invalidatesTags: ['AlgorithmData', 'AlgorithmsData'],
     }),
     postAlgorithmData: build.mutation<
       void,
@@ -76,4 +97,6 @@ export const {
   usePostClusteringMutation,
   useGetAlgorithmsDataQuery,
   usePostAlgorithmDataMutation,
+  useGetAlgorithmDataQuery,
+  useStartAlgorithmMutation,
 } = clusteringsApi;

@@ -123,7 +123,7 @@ const Clusterings = ({ id }: { id: number }) => {
           />
         )}
       </Box>
-      {clusteringId && <Clustering clusteringId={parseInt(clusteringId)} />}
+      {data && clusteringId && <Clustering clusteringId={parseInt(clusteringId)} />}
     </>
   );
 };
