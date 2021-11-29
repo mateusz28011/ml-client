@@ -21,17 +21,12 @@ import Clustering from './Clustering';
 const Clusterings = ({ id }: { id: number }) => {
   const { clusteringId } = useParams<{ clusteringId: string }>();
   const history = useHistory();
-  //  const dispatch = useAppDispatch();
   const [page, setPage] = useState<number>();
   const { data, isError, isLoading, isFetching } = useGetClusteringsQuery({
     id: id,
     page: page,
   });
 
-  //  const refetchDatasets = () => {
-  //    dispatch(datasetsApi.util.invalidateTags(['Datasets']));
-  //    setPage(undefined);
-  //  };
   return (
     <>
       <Box
@@ -78,6 +73,7 @@ const Clusterings = ({ id }: { id: number }) => {
                 {data.results.map((clustering, index) => (
                   <Tr
                     as={RTr}
+                    pos='relative'
                     border='0 !important'
                     onClick={() =>
                       history.push(
@@ -92,8 +88,18 @@ const Clusterings = ({ id }: { id: number }) => {
                     }}
                   >
                     <Td as={RTd}>{clustering.name}</Td>
-                    {/* <Td as={RTd}>222</Td>
-                      <Td as={RTd}>2222</Td> */}
+                    {parseInt(clusteringId) === clustering.id && (
+                      <Box
+                        borderLeftRadius='full'
+                        zIndex='100'
+                        pos='absolute'
+                        h='full'
+                        borderLeft='8px'
+                        borderLeftColor='orange.400'
+                        left='-0.50rem'
+                        bottom='0'
+                      />
+                    )}
                   </Tr>
                 ))}
               </Tbody>
@@ -123,7 +129,9 @@ const Clusterings = ({ id }: { id: number }) => {
           />
         )}
       </Box>
-      {data && clusteringId && <Clustering clusteringId={parseInt(clusteringId)} />}
+      {data && clusteringId && (
+        <Clustering clusteringId={parseInt(clusteringId)} />
+      )}
     </>
   );
 };

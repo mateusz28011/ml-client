@@ -1,7 +1,6 @@
 import { Button } from '@chakra-ui/button';
 import { FormControl } from '@chakra-ui/form-control';
 import { CloseIcon } from '@chakra-ui/icons';
-import { Input } from '@chakra-ui/input';
 import { Box, HStack } from '@chakra-ui/layout';
 import {
   NumberDecrementStepper,

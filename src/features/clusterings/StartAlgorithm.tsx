@@ -9,9 +9,8 @@ const StartAlgorithm = ({
   clusteringId: number;
   algorithmId: number;
 }) => {
-  const [startAlgorithm, { data, isLoading, isSuccess, isError }] =
-    useStartAlgorithmMutation();
-  console.log(data);
+  const [startAlgorithm, { isLoading }] = useStartAlgorithmMutation();
+
   return (
     <Button
       isDisabled={isLoading}

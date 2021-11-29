@@ -13,15 +13,21 @@ export interface PostClustering {
 
 export interface AlgorithmDataList {
   id: number;
-  taskStatus: string;
+  taskStatus: string | null;
   algorithmDisplay: string;
   clustersCount: number;
 }
 
+interface Scores {
+  calinskiHarabaszScore: string;
+  daviesBouldinScore: string;
+  silhouetteScore: string;
+}
+
 export interface AlgorithmData extends AlgorithmDataList {
-  resultData: string;
+  resultData: string | null;
   algorithm: number;
-  scores: any;
+  scores: Scores | null;
 }
 
 export interface PostAlgorithmData {
@@ -72,10 +78,18 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
       query: ({ clusteringId, id }) => ({
         url: `clusterings/${clusteringId}/algorithms/${id}/start/`,
         method: 'POST',
-        body: undefined,
       }),
       invalidatesTags: ['AlgorithmData', 'AlgorithmsData'],
     }),
+    deleteAlgorithm: build.mutation<void, { clusteringId: number; id: number }>(
+      {
+        query: ({ clusteringId, id }) => ({
+          url: `clusterings/${clusteringId}/algorithms/${id}/`,
+          method: 'DELETE',
+        }),
+        invalidatesTags: ['AlgorithmData', 'AlgorithmsData'],
+      }
+    ),
     postAlgorithmData: build.mutation<
       void,
       { id: number; data: PostAlgorithmData }
@@ -99,4 +113,5 @@ export const {
   usePostAlgorithmDataMutation,
   useGetAlgorithmDataQuery,
   useStartAlgorithmMutation,
+  useDeleteAlgorithmMutation,
 } = clusteringsApi;

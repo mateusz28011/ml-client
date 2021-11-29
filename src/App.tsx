@@ -7,7 +7,6 @@ import doesHttpOnlyCookieExist from './common/doesHttpOnlyCookieExist';
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import Navbar from './components/sections/Navbar';
-import Algorithm from './features/clusterings/Algorithm';
 import Dataset from './features/datasets/Dataset';
 import Datasets from './features/datasets/Datasets';
 import PrivateRoute from './PrivateRoute';

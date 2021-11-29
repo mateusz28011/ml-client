@@ -79,6 +79,7 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                 {data.results.map((algorithmData, index) => (
                   <Tr
                     as={RTr}
+                    pos='relative'
                     border='0 !important'
                     onClick={() =>
                       history.push(
@@ -98,17 +99,19 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                     </Td>
                     <Td isNumeric as={RTd}>
                       {algorithmData.clustersCount}
-                      {/* <Center h={4}>
-                         <Link
-                           href={dataset.file}
-                           onClick={(e) => e.stopPropagation()}
-                         >
-                           <Button variant='ghost' size='sm'>
-                             <DownloadIcon boxSize={5} color='gray.600' />
-                           </Button>
-                         </Link>
-                       </Center> */}
                     </Td>
+                    {parseInt(algorithmId) === algorithmData.id && (
+                      <Box
+                        borderLeftRadius='full'
+                        zIndex='100'
+                        pos='absolute'
+                        h='full'
+                        borderLeft='8px'
+                        borderLeftColor='orange.400'
+                        left='-0.50rem'
+                        bottom='0'
+                      />
+                    )}
                   </Tr>
                 ))}
               </Tbody>
