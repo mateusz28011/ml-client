@@ -39,7 +39,7 @@ const DeleteAlgorithm = ({
         duration: 3000,
       });
     }
-  }, [isSuccess, isLoading, isError, toast]);
+  }, [isSuccess, isLoading, isError, toast, clusteringId, history, id]);
 
   const handleDelete = () => {
     deleteAlgorithm({ clusteringId: clusteringId, id: algorithmId });
@@ -53,7 +53,7 @@ const DeleteAlgorithm = ({
       isLoading={isLoading}
       onClick={handleDelete}
     >
-      <DeleteIcon w={6} h={6} color='red.500' />
+      <DeleteIcon w={5} h={5} color='red.500' />
     </Button>
   );
 };

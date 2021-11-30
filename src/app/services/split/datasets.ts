@@ -25,6 +25,17 @@ export const datasetsApi = emptySplitApi.injectEndpoints({
       }),
       providesTags: ['Dataset'],
     }),
+    renameDataset: build.mutation<
+      Required<Dataset>,
+      { id: number; name: string }
+    >({
+      query: ({ id, name }) => ({
+        url: `datasets/${id}/`,
+        method: 'PATCH',
+        body: { name: name },
+      }),
+      invalidatesTags: ['Dataset', 'Datasets'],
+    }),
 
     // uploadDataset: build.mutation<
     //   Dataset,
@@ -42,4 +53,8 @@ export const datasetsApi = emptySplitApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetDatasetsQuery, useGetDatasetQuery } = datasetsApi;
+export const {
+  useGetDatasetsQuery,
+  useGetDatasetQuery,
+  useRenameDatasetMutation,
+} = datasetsApi;

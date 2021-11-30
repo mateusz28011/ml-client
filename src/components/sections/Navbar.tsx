@@ -307,11 +307,11 @@ const NAV_ITEMS: Array<NavItem> = [
     children: [
       {
         label: 'Datasets',
-        subLabel: 'Manage your data sets',
+        subLabel: 'Manage your datasets',
         to: '/datasets',
       },
       {
-        label: 'Second',
+        label: 'Empty',
         subLabel: 'Desc',
         to: '/register',
       },
@@ -319,7 +319,7 @@ const NAV_ITEMS: Array<NavItem> = [
     isPrivate: true,
   },
   {
-    label: 'Second',
+    label: 'Empty',
     to: '/login',
   },
 ];

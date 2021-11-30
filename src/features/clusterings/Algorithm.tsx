@@ -1,15 +1,12 @@
 import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/alert';
 import { Button } from '@chakra-ui/button';
-import { DeleteIcon, DownloadIcon } from '@chakra-ui/icons';
+import { DownloadIcon } from '@chakra-ui/icons';
 
 import {
   Box,
-  Center,
   Flex,
   HStack,
   Link,
-  List,
-  ListIcon,
   ListItem,
   Text,
   UnorderedList,
@@ -34,8 +31,6 @@ const Algorithm = ({
     id: algorithmId,
   });
 
-  console.log(data);
-
   return (
     <Box mb='6rem'>
       {isLoading ? (
@@ -53,7 +48,7 @@ const Algorithm = ({
               algorithmId={algorithmId}
             />
           </Flex>
-          <VStack alignItems='start' px={[0, 50, 150]} mt={4}>
+          <VStack alignItems='start' px={[0, 50, 125, 150]} mt={4}>
             <HStack>
               <Text fontWeight='medium'>Clusters count:</Text>
               <Text>{data.clustersCount}</Text>

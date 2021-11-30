@@ -127,7 +127,6 @@ const Datasets = () => {
           </Alert>
         </Box>
       ) : null}
-
       {!isError && !isLoading && (
         <FileUpload refetchDatasets={refetchDatasets} />
       )}

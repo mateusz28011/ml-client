@@ -6,6 +6,7 @@ import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/alert';
 import PageLoader from '../../components/ui/PageLoader';
 import { useParams } from 'react-router';
 import Clusterings from '../clusterings/Clusterings';
+import RenameDataset from './RenameDataset';
 
 const Dataset = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,10 +22,9 @@ const Dataset = () => {
         <PageLoader />
       ) : dataset ? (
         <>
-          <Text textAlign='center' fontSize='2xl'>
-            {dataset.name}
-          </Text>
-          <VStack alignItems='start' px={[0, 50, 150]} mt={4}>
+          <RenameDataset name={dataset.name} id={parseInt(id)} />
+
+          <VStack alignItems='start' px={[0, 50, 125, 150]} mt={4}>
             <HStack>
               <Text fontWeight='medium'>Uploaded:</Text>
               <Text>{new Date(dataset.created).toLocaleString()}</Text>
