@@ -89,16 +89,18 @@ const Clusterings = ({ id }: { id: number }) => {
                   >
                     <Td as={RTd}>{clustering.name}</Td>
                     {parseInt(clusteringId) === clustering.id && (
-                      <Box
-                        borderLeftRadius='full'
+                      <Td
+                        columnkey='000'
+                        position='absolute'
+                        h='full'
+                        borderLeftRadius='lg'
                         zIndex='100'
                         pos='absolute'
-                        h='full'
                         borderLeft='8px'
                         borderLeftColor='orange.400'
                         left='-0.50rem'
                         bottom='0'
-                      />
+                      ></Td>
                     )}
                   </Tr>
                 ))}

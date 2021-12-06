@@ -16,6 +16,7 @@ import React from 'react';
 
 import { BeatLoader } from 'react-spinners';
 import { useGetAlgorithmDataQuery } from '../../app/services/split/clusterings';
+import Plot2D from '../plots/Plot2D';
 import DeleteAlgorithm from './DeleteAlgorithm';
 import StartAlgorithm from './StartAlgorithm';
 
@@ -57,52 +58,60 @@ const Algorithm = ({
               <Text fontWeight='medium'>Status:</Text>
               <Text>{data.taskStatus || 'NOT STARTED'}</Text>
             </HStack>
-            {data.resultData && (
-              <HStack>
-                <Text fontWeight='medium'>Download result data:</Text>
-                <Link
-                  href={data.resultData}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Button variant='ghost' size='sm'>
-                    <DownloadIcon boxSize={5} color='gray.600' />
-                  </Button>
-                </Link>
-              </HStack>
-            )}
-            {data.scores && (
+            {data.taskStatus === 'SUCCESS' && (
               <>
-                <Text fontWeight='medium'>Scores:</Text>
-                <UnorderedList ml='2.5rem !important'>
-                  <ListItem>
-                    <HStack>
-                      <Text fontWeight='medium'>
-                        Calinski and Harabasz score:
-                      </Text>
-                      <Text>
-                        {Number(data.scores.calinskiHarabaszScore).toPrecision(
-                          4
-                        )}
-                      </Text>
-                    </HStack>
-                  </ListItem>
-                  <ListItem>
-                    <HStack>
-                      <Text fontWeight='medium'>Davies-Bouldin score:</Text>
-                      <Text>
-                        {Number(data.scores.daviesBouldinScore).toPrecision(4)}
-                      </Text>
-                    </HStack>
-                  </ListItem>
-                  <ListItem>
-                    <HStack>
-                      <Text fontWeight='medium'>Silhouette Coefficient:</Text>
-                      <Text>
-                        {Number(data.scores.silhouetteScore).toPrecision(4)}
-                      </Text>
-                    </HStack>
-                  </ListItem>
-                </UnorderedList>
+                {data.resultData && (
+                  <HStack>
+                    <Text fontWeight='medium'>Download result data:</Text>
+                    <Link
+                      href={data.resultData}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button variant='ghost' size='sm'>
+                        <DownloadIcon boxSize={5} color='gray.600' />
+                      </Button>
+                    </Link>
+                  </HStack>
+                )}
+                {data.scores && (
+                  <>
+                    <Text fontWeight='medium'>Scores:</Text>
+                    <UnorderedList ml='2.5rem !important'>
+                      <ListItem>
+                        <HStack>
+                          <Text fontWeight='medium'>
+                            Calinski and Harabasz score:
+                          </Text>
+                          <Text>
+                            {Number(
+                              data.scores.calinskiHarabaszScore
+                            ).toPrecision(4)}
+                          </Text>
+                        </HStack>
+                      </ListItem>
+                      <ListItem>
+                        <HStack>
+                          <Text fontWeight='medium'>Davies-Bouldin score:</Text>
+                          <Text>
+                            {Number(data.scores.daviesBouldinScore).toPrecision(
+                              4
+                            )}
+                          </Text>
+                        </HStack>
+                      </ListItem>
+                      <ListItem>
+                        <HStack>
+                          <Text fontWeight='medium'>
+                            Silhouette Coefficient:
+                          </Text>
+                          <Text>
+                            {Number(data.scores.silhouetteScore).toPrecision(4)}
+                          </Text>
+                        </HStack>
+                      </ListItem>
+                    </UnorderedList>
+                  </>
+                )}
               </>
             )}
             {(data.taskStatus === null ||
@@ -113,6 +122,7 @@ const Algorithm = ({
               />
             )}
           </VStack>
+          <Plot2D algorithmData={data} />
         </>
       ) : isError ? (
         <Alert status='error' variant='left-accent'>

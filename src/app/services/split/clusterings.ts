@@ -28,6 +28,8 @@ export interface AlgorithmData extends AlgorithmDataList {
   resultData: string | null;
   algorithm: number;
   scores: Scores | null;
+  plot2dPoints: string | null;
+  plot3dPoints: string | null;
 }
 
 export interface PostAlgorithmData {
