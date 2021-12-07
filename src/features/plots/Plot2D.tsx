@@ -143,7 +143,13 @@ const Plot2D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
         //     marker: { color: labels },
         //   },
         // ]}
-        layout={{ width: 0.9 * windowWidth }}
+        layout={{
+          width: 0.9 * windowWidth,
+          height: 600,
+          title: { text: 'Plot 2D', font: { size: 24 } },
+          xaxis: { title: { text: 'x', font: { size: 18 } } },
+          yaxis: { title: { text: 'y', font: { size: 18 } } },
+        }}
       />
     </Center>
   );

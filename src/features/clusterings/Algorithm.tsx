@@ -1,5 +1,6 @@
 import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/alert';
 import { Button } from '@chakra-ui/button';
+import { Divider } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 
 import {
@@ -17,6 +18,7 @@ import React from 'react';
 import { BeatLoader } from 'react-spinners';
 import { useGetAlgorithmDataQuery } from '../../app/services/split/clusterings';
 import Plot2D from '../plots/Plot2D';
+import Plot3D from '../plots/Plot3D';
 import DeleteAlgorithm from './DeleteAlgorithm';
 import StartAlgorithm from './StartAlgorithm';
 
@@ -122,7 +124,10 @@ const Algorithm = ({
               />
             )}
           </VStack>
+          <Divider my={10} />
           <Plot2D algorithmData={data} />
+          <Divider my={10} />
+          <Plot3D algorithmData={data} />
         </>
       ) : isError ? (
         <Alert status='error' variant='left-accent'>
