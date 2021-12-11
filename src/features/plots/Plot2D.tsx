@@ -4,32 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { readRemoteFile } from 'react-papaparse';
 import Plot from 'react-plotly.js';
 import { AlgorithmData } from '../../app/services/split/clusterings';
-import seedrandom from 'seedrandom';
-
-type Data = {
-  x: any[];
-  y: any[];
-};
 
 const getWindowWidth = () =>
   window.innerWidth > 1280 ? 1280 : window.innerWidth;
 
-const generateColors = (n: number): string[] => {
-  seedrandom('1', { global: true });
-  return Array.from(Array(n).keys()).map(
-    () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
-  );
-};
-
 const Plot2D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
   const [points, setPoints] = useState<ParseResult<any>>();
-  //   const [data, setData] = useState<Data | undefined>(undefined);
   const [data, setData] = useState<any>();
-  //   const [labels, setLabels] = useState<any[] | undefined>(undefined);
   const [labels, setLabels] = useState<ParseResult<any>>();
   const [windowWidth, setWindowWidth] = useState<number>(getWindowWidth());
-  const [colors] = useState(generateColors(algorithmData.clustersCount));
-  console.log(data);
 
   useEffect(() => {
     const updateWidth = () => setWindowWidth(getWindowWidth());

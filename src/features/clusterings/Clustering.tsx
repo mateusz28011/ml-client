@@ -1,4 +1,4 @@
-import { Box, Center, Text } from '@chakra-ui/layout';
+import { Box, Center, Text, Flex, HStack } from '@chakra-ui/layout';
 import React, { useState } from 'react';
 import { useGetAlgorithmsDataQuery } from '../../app/services/split/clusterings';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/table';
@@ -17,15 +17,47 @@ import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/alert';
 import AddAlgorithm from './AddAlgorithm';
 import { useHistory, useParams } from 'react-router';
 import Algorithm from './Algorithm';
+import { Button } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
+
+const initialCompareAlgorithms = { isChoosing: false, algorithms: [] };
 
 const Clustering = ({ clusteringId }: { clusteringId: number }) => {
   const history = useHistory();
   const { id, algorithmId } = useParams<{ id: string; algorithmId: string }>();
   const [page, setPage] = useState<number>();
+  const [compareAlgorithms, setCompareAlgorithms] = useState<{
+    isChoosing: boolean;
+    algorithms: number[];
+  }>({
+    ...initialCompareAlgorithms,
+    isChoosing: (history.location.state as any)?.clickCompareFromAlgorithm
+      ? true
+      : false,
+  });
   const { data, isError, isLoading, isFetching } = useGetAlgorithmsDataQuery({
     id: clusteringId,
     page: page,
   });
+  const [isAddAlgorithmOpen, setIsAddAlgorithmOpen] = useState(false);
+
+  const chooseAlgorithm = (id: number) => {
+    setCompareAlgorithms((prev) => {
+      if (prev.algorithms.includes(id)) {
+        return {
+          ...prev,
+          algorithms: prev.algorithms.filter((prevId) => prevId !== id),
+        };
+      }
+      return { ...prev, algorithms: [...prev.algorithms, id] };
+    });
+  };
+
+  const toggleChoosingAlgorithm = () => {
+    setCompareAlgorithms((prev) => {
+      return { ...prev, isChoosing: !prev.isChoosing };
+    });
+  };
 
   return isLoading ? (
     <Box textAlign='center' mt='20' mb='10'>
@@ -81,11 +113,17 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                     as={RTr}
                     pos='relative'
                     border='0 !important'
-                    onClick={() =>
-                      history.push(
-                        `/datasets/${id}/clustering/${clusteringId}/algorithm/${algorithmData.id}`
-                      )
-                    }
+                    onClick={() => {
+                      compareAlgorithms.isChoosing
+                        ? chooseAlgorithm(algorithmData.id)
+                        : history.push(
+                            `/datasets/${id}/clustering/${clusteringId}/${
+                              algorithmData.id !== parseInt(algorithmId)
+                                ? `algorithm/${algorithmData.id}`
+                                : ''
+                            }`
+                          );
+                    }}
                     key={algorithmData.id}
                     bg={index % 2 ? undefined : 'orange.100'}
                     _hover={{
@@ -100,7 +138,10 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                     <Td isNumeric as={RTd}>
                       {algorithmData.clustersCount}
                     </Td>
-                    {parseInt(algorithmId) === algorithmData.id && (
+                    {(parseInt(algorithmId) === algorithmData.id ||
+                      compareAlgorithms.algorithms.includes(
+                        algorithmData.id
+                      )) && (
                       <Td
                         columnkey='000'
                         position='absolute'
@@ -133,7 +174,74 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
             </Alert>
           </Box>
         ) : null}
-        {!isError && !isLoading && <AddAlgorithm clusteringId={clusteringId} />}
+        {/* {!isError && !isLoading && <AddAlgorithm clusteringId={clusteringId} />}
+        {!isError && !isLoading && data?.count !== 0 && <div>btn</div>} */}
+        {!isError && !isLoading && (
+          <Flex
+            w='full'
+            wrap={['wrap', 'nowrap']}
+            mt={5}
+            marginBottom={{ base: '2.5', md: '0' }}
+            px={5}
+          >
+            {!compareAlgorithms.isChoosing && (
+              <AddAlgorithm
+                clusteringId={clusteringId}
+                isOpen={isAddAlgorithmOpen}
+                setIsOpen={setIsAddAlgorithmOpen}
+              />
+            )}
+            {data?.count !== 0 && !isAddAlgorithmOpen ? (
+              compareAlgorithms.isChoosing ? (
+                <Box>
+                  <HStack
+                    wrap={['wrap', 'nowrap']}
+                    spacing={[0, 3]}
+                    justify={['space-between', 'normal']}
+                  >
+                    <Button
+                      // isLoading={isLoading}
+                      loadingText='Creating'
+                      type='submit'
+                      // ml={['0px !important', '12px !important']}
+                      mr={['12px !important', '0px !important']}
+                      colorScheme='green'
+                      flex={['1', '0 1 auto']}
+                    >
+                      CONFIRM
+                    </Button>
+                    <Button
+                      // isDisabled={isLoading}
+                      colorScheme='red'
+                      onClick={() =>
+                        setCompareAlgorithms(initialCompareAlgorithms)
+                      }
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </HStack>
+                </Box>
+              ) : (
+                <Button
+                  variant='outline'
+                  w={['full', 'auto']}
+                  onClick={() => {
+                    toggleChoosingAlgorithm();
+                    algorithmId &&
+                      history.push(
+                        `/datasets/${id}/clustering/${clusteringId}`,
+                        {
+                          clickCompareFromAlgorithm: algorithmId ? true : false,
+                        }
+                      );
+                  }}
+                >
+                  COMPARE ALGORITHMS
+                </Button>
+              )
+            ) : null}
+          </Flex>
+        )}
         {data && (
           <Paginator
             setPage={setPage}

@@ -44,17 +44,25 @@ function App() {
             <SignUp />
           </Route>
           <PrivateRoute exact path='/datasets' component={Datasets} />
-          <Route exact path='/datasets/:id' component={Dataset} />
           <Route
             exact
-            path='/datasets/:id/clustering/:clusteringId'
-            component={Dataset}
-          />
+            path={[
+              '/datasets/:id',
+              '/datasets/:id/clustering/:clusteringId/algorithm/:algorithmId',
+              '/datasets/:id/clustering/:clusteringId',
+            ]}
+          >
+            <Dataset />
+          </Route>
+          {/* <Route exact path='/datasets/:id/clustering/:clusteringId'>
+            <Dataset />
+          </Route>
           <Route
             exact
             path='/datasets/:id/clustering/:clusteringId/algorithm/:algorithmId'
-            component={Dataset}
-          />
+          >
+            <Dataset />
+          </Route> */}
           {/* <Route>
             <Home />
           </Route> */}

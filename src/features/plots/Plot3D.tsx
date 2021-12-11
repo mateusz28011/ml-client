@@ -5,12 +5,6 @@ import { readRemoteFile } from 'react-papaparse';
 import Plot from 'react-plotly.js';
 import { AlgorithmData } from '../../app/services/split/clusterings';
 
-type Data = {
-  x: any[];
-  y: any[];
-  z: any[];
-};
-
 const getWindowWidth = () =>
   window.innerWidth > 1280 ? 1280 : window.innerWidth;
 
@@ -19,7 +13,6 @@ const Plot3D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
   const [data, setData] = useState<any>();
   const [labels, setLabels] = useState<ParseResult<any>>();
   const [windowWidth, setWindowWidth] = useState<number>(getWindowWidth());
-  console.log(data);
 
   useEffect(() => {
     const updateWidth = () => setWindowWidth(getWindowWidth());
