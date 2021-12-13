@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/number-input';
 import { Select } from '@chakra-ui/select';
 import { useToast } from '@chakra-ui/toast';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   PostAlgorithmData,
@@ -33,7 +33,10 @@ const AddAlgorithm = ({
   const [postAlgorithmData, { isLoading, isSuccess, isError }] =
     usePostAlgorithmDataMutation();
 
-  const toggleIsOpen = () => setIsOpen((prev) => !prev);
+  const toggleIsOpen = useCallback(
+    () => setIsOpen((prev) => !prev),
+    [setIsOpen]
+  );
 
   const onSubmit = (data: PostAlgorithmData) => {
     postAlgorithmData({ id: clusteringId, data: data });

@@ -67,6 +67,15 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
       }),
       providesTags: ['AlgorithmsData'],
     }),
+    getAlgorithmsDataCompare: build.query<
+      Pagination & { results: Array<AlgorithmData> },
+      { id: number; ids: string }
+    >({
+      query: ({ id, ids }) => ({
+        url: `clusterings/${id}/algorithms/${ids}`,
+      }),
+      providesTags: ['AlgorithmsDataCompare'],
+    }),
     getAlgorithmData: build.query<
       AlgorithmData,
       { clusteringId: number; id: number }
@@ -116,4 +125,5 @@ export const {
   useGetAlgorithmDataQuery,
   useStartAlgorithmMutation,
   useDeleteAlgorithmMutation,
+  useGetAlgorithmsDataCompareQuery,
 } = clusteringsApi;

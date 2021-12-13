@@ -1,5 +1,5 @@
 import { Box, Center, Text, Flex, HStack } from '@chakra-ui/layout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetAlgorithmsDataQuery } from '../../app/services/split/clusterings';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/table';
 import {
@@ -19,11 +19,35 @@ import { useHistory, useParams } from 'react-router';
 import Algorithm from './Algorithm';
 import { Button } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
+import CompareAlgorithms from '../plots/CompareAlgorithms';
+import useQuerySearch from '../../hooks/useQuerySearch';
+import qs from 'qs';
 
 const initialCompareAlgorithms = { isChoosing: false, algorithms: [] };
 
+const toQuerySearch = (ids: any[]): [string, number[]] => {
+  // const checkedIds = ids.filter((id) => parseInt(id));
+  const checkedIds = ids.reduce((previousValue, currentValue) => {
+    let id = parseInt(currentValue);
+    if (id) {
+      return [...previousValue, id];
+    } else return previousValue;
+  }, []);
+  return [
+    checkedIds.length > 0
+      ? qs.stringify(
+          { ids: checkedIds },
+          { arrayFormat: 'repeat', addQueryPrefix: true }
+        )
+      : '',
+    checkedIds,
+  ];
+};
+
 const Clustering = ({ clusteringId }: { clusteringId: number }) => {
   const history = useHistory();
+  const querySearch = useQuerySearch();
+  const [querySearchIds, setQuerySearchIds] = useState('');
   const { id, algorithmId } = useParams<{ id: string; algorithmId: string }>();
   const [page, setPage] = useState<number>();
   const [compareAlgorithms, setCompareAlgorithms] = useState<{
@@ -40,6 +64,19 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
     page: page,
   });
   const [isAddAlgorithmOpen, setIsAddAlgorithmOpen] = useState(false);
+
+  useEffect(() => {
+    if (querySearch.ids && Array.isArray(querySearch.ids)) {
+      const [query, checkedIds] = toQuerySearch(querySearch.ids);
+      if (query && checkedIds.length >= 2) {
+        setQuerySearchIds(query);
+        compareAlgorithms.algorithms.length === 0 &&
+          setCompareAlgorithms((prev) => {
+            return { ...prev, algorithms: checkedIds };
+          });
+      }
+    }
+  }, [querySearch, compareAlgorithms.algorithms]);
 
   const chooseAlgorithm = (id: number) => {
     setCompareAlgorithms((prev) => {
@@ -100,6 +137,7 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
             <Table as={RTable} size='md'>
               <Thead as={RThead}>
                 <Tr as={RTr}>
+                  <Th as={RTh}>Id</Th>
                   <Th as={RTh}>Name</Th>
                   <Th as={RTh}>Status</Th>
                   <Th isNumeric as={RTh}>
@@ -131,6 +169,9 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                       cursor: 'pointer',
                     }}
                   >
+                    <Td as={RTd} fontWeight='medium'>
+                      {algorithmData.id}
+                    </Td>
                     <Td as={RTd}>{algorithmData.algorithmDisplay}</Td>
                     <Td as={RTd}>
                       {algorithmData.taskStatus || 'NOT STARTED'}
@@ -174,8 +215,6 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
             </Alert>
           </Box>
         ) : null}
-        {/* {!isError && !isLoading && <AddAlgorithm clusteringId={clusteringId} />}
-        {!isError && !isLoading && data?.count !== 0 && <div>btn</div>} */}
         {!isError && !isLoading && (
           <Flex
             w='full'
@@ -202,11 +241,20 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                     <Button
                       // isLoading={isLoading}
                       loadingText='Creating'
-                      type='submit'
+                      // type='submit'
                       // ml={['0px !important', '12px !important']}
+                      isDisabled={compareAlgorithms.algorithms.length < 2}
                       mr={['12px !important', '0px !important']}
                       colorScheme='green'
                       flex={['1', '0 1 auto']}
+                      onClick={() =>
+                        history.push(
+                          `/datasets/${id}/clustering/${clusteringId}${qs.stringify(
+                            { ids: compareAlgorithms.algorithms },
+                            { arrayFormat: 'repeat', addQueryPrefix: true }
+                          )}`
+                        )
+                      }
                     >
                       CONFIRM
                     </Button>
@@ -253,12 +301,17 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
           />
         )}
       </Box>
-      {data && algorithmId && (
+      {data && algorithmId ? (
         <Algorithm
           clusteringId={clusteringId}
           algorithmId={parseInt(algorithmId)}
         />
-      )}
+      ) : querySearchIds ? (
+        <CompareAlgorithms
+          querySearchIds={querySearchIds}
+          clusteringId={clusteringId}
+        />
+      ) : null}
     </>
   );
 };
