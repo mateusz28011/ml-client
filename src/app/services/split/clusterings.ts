@@ -19,9 +19,9 @@ export interface AlgorithmDataList {
 }
 
 interface Scores {
-  calinskiHarabaszScore: string;
-  daviesBouldinScore: string;
-  silhouetteScore: string;
+  calinskiHarabaszScore: number;
+  daviesBouldinScore: number;
+  silhouetteScore: number;
 }
 
 export interface AlgorithmData extends AlgorithmDataList {
@@ -58,7 +58,7 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
       invalidatesTags: ['Clusterings'],
     }),
     getAlgorithmsData: build.query<
-      Pagination & { results: Array<AlgorithmDataList> },
+      Pagination & { results: Array<Required<AlgorithmDataList>> },
       { id: number; page?: number }
     >({
       query: ({ id, page }) => ({
@@ -68,7 +68,7 @@ export const clusteringsApi = emptySplitApi.injectEndpoints({
       providesTags: ['AlgorithmsData'],
     }),
     getAlgorithmsDataCompare: build.query<
-      Pagination & { results: Array<AlgorithmData> },
+      Array<AlgorithmData>,
       { id: number; ids: string }
     >({
       query: ({ id, ids }) => ({

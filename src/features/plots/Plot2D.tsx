@@ -4,18 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { readRemoteFile } from 'react-papaparse';
 import Plot from 'react-plotly.js';
 import { AlgorithmData } from '../../app/services/split/clusterings';
-
-const getWindowWidth = () =>
-  window.innerWidth > 1280 ? 1280 : window.innerWidth;
+import { getWindowWidthThreshold } from '../../common/helpers';
 
 const Plot2D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
   const [points, setPoints] = useState<ParseResult<any>>();
   const [data, setData] = useState<any>();
   const [labels, setLabels] = useState<ParseResult<any>>();
-  const [windowWidth, setWindowWidth] = useState<number>(getWindowWidth());
+  const [windowWidth, setWindowWidth] = useState<number>(
+    getWindowWidthThreshold()
+  );
 
   useEffect(() => {
-    const updateWidth = () => setWindowWidth(getWindowWidth());
+    const updateWidth = () => setWindowWidth(getWindowWidthThreshold());
 
     window.addEventListener('resize', updateWidth);
     return () => {
@@ -114,7 +114,7 @@ const Plot2D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
   //   }, [algorithmData.plot2dPoints]);
 
   return (
-    <Center>
+    <Center shadow='md' border='1px' borderColor='gray.200' py={5} rounded='lg'>
       <Plot
         data={data}
         // data={[
@@ -129,7 +129,7 @@ const Plot2D = ({ algorithmData }: { algorithmData: AlgorithmData }) => {
         layout={{
           width: 0.9 * windowWidth,
           height: 600,
-          title: { text: 'Plot 2D', font: { size: 24 } },
+          title: { text: '2D Visualization', font: { size: 24 } },
           xaxis: { title: { text: 'x', font: { size: 18 } } },
           yaxis: { title: { text: 'y', font: { size: 18 } } },
         }}

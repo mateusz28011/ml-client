@@ -153,7 +153,8 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                     border='0 !important'
                     onClick={() => {
                       compareAlgorithms.isChoosing
-                        ? chooseAlgorithm(algorithmData.id)
+                        ? algorithmData.taskStatus === 'SUCCESS' &&
+                          chooseAlgorithm(algorithmData.id)
                         : history.push(
                             `/datasets/${id}/clustering/${clusteringId}/${
                               algorithmData.id !== parseInt(algorithmId)
@@ -247,14 +248,15 @@ const Clustering = ({ clusteringId }: { clusteringId: number }) => {
                       mr={['12px !important', '0px !important']}
                       colorScheme='green'
                       flex={['1', '0 1 auto']}
-                      onClick={() =>
+                      onClick={() => {
                         history.push(
                           `/datasets/${id}/clustering/${clusteringId}${qs.stringify(
                             { ids: compareAlgorithms.algorithms },
                             { arrayFormat: 'repeat', addQueryPrefix: true }
                           )}`
-                        )
-                      }
+                        );
+                        toggleChoosingAlgorithm();
+                      }}
                     >
                       CONFIRM
                     </Button>
